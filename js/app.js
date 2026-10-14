@@ -17,7 +17,7 @@ const store = {
 /* ---------- translations ---------- */
 const T = {
   bn: {
-    tagline: "কোড করো। শেখো। চোখের সামনে দেখো।",
+    tagline: "Code. Learn. Visualize.",
     run: "▶ চালাও ও দেখাও",
     edit: "✎ এডিট",
     blank: "＋ ফাঁকা",
