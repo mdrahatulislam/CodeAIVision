@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DL Code Visualizer</title>
+<meta name="description" content="Run real Python in your browser and watch every line execute — variables, arrays, neural-network layers and convolutions, step by step.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">{ }</span><div>DL Code Visualizer <small data-i18n="tagline"></small></div></div>
+  <select id="exSelect" aria-label="Example"></select>
+  <span class="spacer"></span>
+  <button class="btn" id="langBtn" title="Language">EN</button>
+  <button class="btn" id="themeBtn" title="Theme" aria-label="Theme">☾</button>
+  <a class="gh" href="https://github.com/mdrahatulislam" id="ghLink" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+
+<main>
+  <section class="col">
+    <div class="card codecard">
+      <div class="toolbar">
+        <button class="btn primary" id="runBtn" data-i18n="run">▶ Run</button>
+        <button class="btn" id="editBtn" data-i18n="edit">✎ Edit</button>
+        <button class="btn" id="newBtn" data-i18n="blank">＋ Blank</button>
+        <button class="btn" id="linkBtn" data-i18n="share">🔗 Link</button>
+        <span class="status" id="status"></span>
+      </div>
+      <div class="exdesc" id="exDesc"></div>
+      <div class="editwrap" id="editWrap">
+        <pre class="gut" id="gut" aria-hidden="true"></pre>
+        <textarea id="editor" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" aria-label="Python code"></textarea>
+      </div>
+      <div class="codeview hidden" id="codeView" role="list"></div>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="card">
+      <div class="controls">
+        <button class="btn icon" id="firstBtn" title="Home">⏮</button>
+        <button class="btn icon" id="prevBtn" title="←">◀</button>
+        <button class="btn primary" id="playBtn" title="Space">Auto ▶</button>
+        <button class="btn icon" id="nextBtn" title="→">▶</button>
+        <button class="btn icon" id="lastBtn" title="End">⏭</button>
+        <input type="range" id="slider" min="0" max="0" value="0" aria-label="Step">
+        <span class="stepno" id="stepNo">0 / 0</span>
+        <select id="speed" aria-label="Speed">
+          <option value="1200">0.5×</option><option value="600" selected>1×</option>
+          <option value="250">2×</option><option value="90">5×</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" id="explainCard"><h3 data-i18n="explainTitle"></h3><div id="explain"></div></div>
+    <div class="card dlviz hidden" id="dlCard"><h3 id="dlTitle"></h3><div id="dlviz"></div></div>
+    <div class="card"><h3 data-i18n="varsTitle"></h3><div class="vars" id="vars"></div></div>
+    <div class="card chart hidden" id="chartCard"><h3 data-i18n="chartTitle"></h3><div id="chart"></div></div>
+    <div class="card"><h3 data-i18n="outTitle"></h3><pre class="stdout" id="stdout"></pre></div>
+  </section>
+</main>
+
+
+<section class="labs" aria-label="Deep learning labs">
+  <div class="card lab-card">
+    <div class="lab-heading"><div><h2>🧠 Architecture Explorer</h2><p class="hint">Explore common network stages and tensor shapes. This is a learning diagram, not a visualization of a loaded model.</p></div>
+      <label class="field-inline">Template <select id="archPreset"><option value="cnn">CNN image classifier</option><option value="mlp">MLP classifier</option><option value="autoencoder">Autoencoder</option><option value="custom">Custom stack</option></select></label>
+    </div>
+    <div id="archDiagram" class="arch-diagram" aria-live="polite"></div>
+    <div class="arch-custom hidden" id="archCustom"><label for="archLayers">Custom layers (one per line, format: Layer name | output shape)</label><textarea id="archLayers" rows="4" spellcheck="false">Input image | 1×3×224×224
+Conv2D + ReLU | 1×32×112×112
+MaxPool | 1×32×56×56
+Flatten | 1×100352
+Linear | 1×10</textarea><button class="btn primary" id="drawArchBtn">Draw architecture</button></div>
+  </div>
+  <div class="card lab-card">
+    <div class="lab-heading"><div><h2>🖼️ Image Testing Lab</h2><p class="hint">Upload an image and detect common objects (people, vehicles, animals, and more) with a pretrained AI model directly in your browser, or load a compatible ONNX model for custom predictions.</p></div></div>
+    <div class="image-tools">
+      <label class="upload-box" for="imageFile">Choose test image <input id="imageFile" type="file" accept="image/*"></label>
+      <label class="upload-box" for="onnxFile">Optional ONNX model <input id="onnxFile" type="file" accept=".onnx,application/octet-stream"></label>
+      <label class="upload-box" for="labelsFile">Optional labels (.txt) <input id="labelsFile" type="file" accept=".txt,text/plain"></label>
+    </div>
+    <div class="image-workspace">
+      <div class="image-preview-wrap"><canvas id="imageCanvas" width="224" height="224" aria-label="Uploaded image preview"></canvas><p id="imagePlaceholder" class="hint">Your image preview will appear here.</p></div>
+      <div class="image-details"><div id="imageMetrics" class="metrics"><span class="hint">No image selected yet.</span></div>
+        <div class="infer-settings"><label>Input width <input id="modelWidth" type="number" min="1" max="1024" value="224"></label><label>Input height <input id="modelHeight" type="number" min="1" max="1024" value="224"></label><label>Input layout <select id="modelLayout"><option value="nchw">NCHW (1,3,H,W)</option><option value="nhwc">NHWC (1,H,W,3)</option></select></label><label>Normalization <select id="modelNorm"><option value="zeroone">RGB / 255</option><option value="minusone">RGB / 127.5 − 1</option><option value="raw">Raw RGB 0–255</option></select></label></div>
+        <div class="image-action-row"><button id="detectPeopleBtn" class="btn primary" disabled>Detect all objects (AI)</button><button id="runInferenceBtn" class="btn secondary" disabled>Run custom ONNX model</button></div>
+        <div id="inferenceResult" class="inference-result" aria-live="polite"><span class="hint">Upload an image, then choose “Detect all objects (AI)”. The pretrained detector loads automatically.</span></div>
+      </div>
+    </div>
+    <p class="privacy-note">Privacy: image and model files are processed in your browser. This demo does not upload them to a server. Model compatibility depends on its input/output format.</p>
+  </div>
+</section>
+
+<footer>
+  <span data-i18n="footer"></span> · <a href="" target="_blank" rel="noopener">Developed by Md Rahatul Islam</a>
+</footer>
+
+<script src="js/tracer_src.js"></script>
+<script src="js/examples.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
