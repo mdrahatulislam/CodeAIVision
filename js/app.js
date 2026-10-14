@@ -16,7 +16,7 @@ const store = {
 /* ---------- translations ---------- */
 const T = {
   bn: {
-    tagline: "লাইন বাই লাইন", run: "▶ চালাও ও দেখাও", edit: "✎ এডিট", blank: "＋ ফাঁকা", share: "🔗 লিংক",
+    tagline: "", run: "▶ চালাও ও দেখাও", edit: "✎ এডিট", blank: "＋ ফাঁকা", share: "🔗 লিংক",
     explainTitle: "এই ধাপে কী ঘটছে", varsTitle: "ভেরিয়েবল (লাইন চলার পরের অবস্থা)", chartTitle: "চার্ট (loss ইত্যাদি)", outTitle: "আউটপুট (print)",
     footer: "ওপেন সোর্স — কোড বদলে নিজের মতো করে চালান",
     loadingPy: "Python লোড হচ্ছে (প্রথমবার একটু সময় লাগে)", loadingPkg: "লাইব্রেরি লোড হচ্ছে", ready: "প্রস্তুত", running: "চলছে",
@@ -33,7 +33,7 @@ const T = {
     a_assign: "`{0}`-এ ডান পাশের হিসাবের ফল রাখা হচ্ছে।", a_other: "লাইনটি চলছে।",
   },
   en: {
-    tagline: "line by line", run: "▶ Run & visualize", edit: "✎ Edit", blank: "＋ Blank", share: "🔗 Link",
+    tagline: "", run: "▶ Run & visualize", edit: "✎ Edit", blank: "＋ Blank", share: "🔗 Link",
     explainTitle: "What happens in this step", varsTitle: "Variables (state after the line ran)", chartTitle: "Chart (loss etc.)", outTitle: "Output (print)",
     footer: "Open source — change the code and run your own",
     loadingPy: "Loading Python (a little slow the first time)", loadingPkg: "Loading libraries", ready: "Ready", running: "Running",
